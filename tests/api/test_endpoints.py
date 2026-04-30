@@ -71,7 +71,7 @@ class TestAPIEndpoints:
     @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.medium
     @pytest.mark.parametrize("amount,down,expect_approved", [
-        pytest.param(1_000,   500, True,  id="small-loan-50pct-down"),
+        pytest.param(100,     50,  True,  id="small-loan-50pct-down"),
         pytest.param(100_000,   1, False, id="large-loan-tiny-down"),
     ])
     def test_loan_decision_table(self, api_client, john_accounts, amount, down, expect_approved):
