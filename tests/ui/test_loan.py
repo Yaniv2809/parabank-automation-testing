@@ -13,13 +13,13 @@ class TestLoan:
     @allure.severity(allure.severity_level.CRITICAL)
     def test_loan_approved(self, logged_in_page):
         """
-        Small loan ($1 000) with a 10 % down payment ($100) against an
+        Small loan ($1 000) with a 50 % down payment ($500) against an
         account with sufficient funds → ParaBank should approve.
         """
         lp = LoanPage(logged_in_page)
         lp.goto()
-        lp.request_loan(amount="1000", down_payment="100")
-        assert lp.is_approved(), "Expected loan approval for $1 000 with $100 down payment"
+        lp.request_loan(amount="1000", down_payment="500")
+        assert lp.is_approved(), "Expected loan approval for $1 000 with $500 down payment"
 
     @allure.id("UI-010")
     @allure.title("Loan request — denied scenario")

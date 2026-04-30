@@ -29,8 +29,14 @@ class LoginPage(BasePage):
 
     def is_logged_in(self) -> bool:
         # ParaBank redirects to overview.htm for BOTH success AND failure.
-        # On failure it lands on overview.htm but shows a p.error — so we
-        # must check that no error element is present.
+        #
+        # ❌ Cannot use p.error: it lives inside div#showError (display:none)
+        #    which is always present in the DOM — locator.count() includes
+        #    hidden elements, so it is always > 0.
+        #
+        # ✅ Use a[href="logout.htm"]: rendered server-side in the leftPanel
+        #    Account Services menu. Present only for authenticated sessions,
+        #    unaffected by the right-panel AJAX account loader.
         if "overview" not in self.page.url:
             return False
-        return self.error_message.count() == 0
+        return self.page.locator('a[href="logout.htm"]').count() > 0

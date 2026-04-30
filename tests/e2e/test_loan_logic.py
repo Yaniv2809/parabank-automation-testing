@@ -20,10 +20,10 @@ class TestLoanLogic:
           3. DB  — confirm a transaction record exists (skipped if DB unavailable)
         """
         from_id = john_accounts[0]
-        amount, down = 1_000, 100
+        amount, down = 1_000, 500
 
         # ── 1. UI: submit loan ───────────────────────────────────────────────
-        with allure.step("UI: submit $1 000 loan with $100 down"):
+        with allure.step("UI: submit $1 000 loan with $500 down"):
             lp = LoanPage(logged_in_page)
             lp.goto()
             lp.request_loan(amount=str(amount), down_payment=str(down))

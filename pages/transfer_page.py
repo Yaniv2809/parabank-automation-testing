@@ -21,7 +21,7 @@ class TransferPage(BasePage):
 
     def transfer(self, amount: str, from_index: int = 0, to_index: int = 1):
         # Both selects are populated via AJAX — wait before selecting.
-        self.page.wait_for_selector("select#fromAccountId option", timeout=15_000)
+        self.page.wait_for_selector("select#fromAccountId option", state="attached", timeout=15_000)
         self.amount_input.fill(str(amount))
         self.from_account.select_option(index=from_index)
         self.to_account.select_option(index=to_index)

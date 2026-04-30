@@ -20,7 +20,7 @@ class LoanPage(BasePage):
     def request_loan(self, amount: str, down_payment: str, from_index: int = 0):
         # fromAccountId options are in the static HTML for loan page,
         # but wait_for_selector is defensive in case of slow loads.
-        self.page.wait_for_selector("select#fromAccountId option", timeout=15_000)
+        self.page.wait_for_selector("select#fromAccountId option", state="attached", timeout=15_000)
         self.amount_input.fill(str(amount))
         self.down_payment_input.fill(str(down_payment))
         self.from_account.select_option(index=from_index)
