@@ -20,15 +20,21 @@ class TransferPage(BasePage):
         self.page.wait_for_load_state("networkidle")
 
     def transfer(self, amount: str, from_index: int = 0, to_index: int = 1):
+        # Both selects are populated via AJAX — wait before selecting.
+        self.page.wait_for_selector("select#fromAccountId option", timeout=15_000)
         self.amount_input.fill(str(amount))
         self.from_account.select_option(index=from_index)
         self.to_account.select_option(index=to_index)
         self.submit_button.click()
-        self.page.wait_for_load_state("networkidle")
+        # Wait for result div to become visible (JS shows it on success).
+        try:
+            self.page.wait_for_selector("#showResult", state="visible", timeout=10_000)
+        except Exception:
+            pass   # may stay hidden on error — that is expected
 
     def is_success(self) -> bool:
-        loc = self.success_title
-        return loc.count() > 0 and "Transfer Complete" in loc.inner_text()
+        loc = self.page.locator("#showResult")
+        return loc.count() > 0 and loc.is_visible()
 
     def get_error(self) -> str:
         loc = self.error_message

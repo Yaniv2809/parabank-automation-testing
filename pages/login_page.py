@@ -28,5 +28,9 @@ class LoginPage(BasePage):
         return loc.inner_text() if loc.count() > 0 else ""
 
     def is_logged_in(self) -> bool:
-        url = self.page.url
-        return "overview" in url or "accounts.htm" in url
+        # ParaBank redirects to overview.htm for BOTH success AND failure.
+        # On failure it lands on overview.htm but shows a p.error — so we
+        # must check that no error element is present.
+        if "overview" not in self.page.url:
+            return False
+        return self.error_message.count() == 0

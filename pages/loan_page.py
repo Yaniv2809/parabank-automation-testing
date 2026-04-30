@@ -18,14 +18,24 @@ class LoanPage(BasePage):
         self.page.wait_for_load_state("networkidle")
 
     def request_loan(self, amount: str, down_payment: str, from_index: int = 0):
+        # fromAccountId options are in the static HTML for loan page,
+        # but wait_for_selector is defensive in case of slow loads.
+        self.page.wait_for_selector("select#fromAccountId option", timeout=15_000)
         self.amount_input.fill(str(amount))
         self.down_payment_input.fill(str(down_payment))
         self.from_account.select_option(index=from_index)
         self.submit_button.click()
-        self.page.wait_for_load_state("networkidle")
+        # Result arrives via AJAX — wait for one of the result divs to appear.
+        self.page.wait_for_selector(
+            "#loanRequestApproved, #loanRequestDenied, #requestLoanError",
+            state="visible",
+            timeout=15_000,
+        )
 
     def is_approved(self) -> bool:
-        return "Approved" in self.page.content()
+        loc = self.page.locator("#loanRequestApproved")
+        return loc.count() > 0 and loc.is_visible()
 
     def is_denied(self) -> bool:
-        return "Denied" in self.page.content()
+        loc = self.page.locator("#loanRequestDenied")
+        return loc.count() > 0 and loc.is_visible()
