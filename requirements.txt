@@ -1,0 +1,9 @@
+playwright
+pytest
+pytest-playwright
+allure-pytest
+requests
+pydantic
+failscope>=0.3.0
+fixtureforge>=2.1.0
+testaxiom>=0.1.0

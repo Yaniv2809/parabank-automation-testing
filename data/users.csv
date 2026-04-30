@@ -1,0 +1,4 @@
+first_name,last_name,address,city,state,zip_code,phone,ssn,username_prefix,password
+Alice,Johnson,123 Main St,Springfield,IL,62701,555-0101,123-45-6789,alice_qa,Test1234!
+Bob,Smith,456 Oak Ave,Chicago,IL,60601,555-0102,234-56-7890,bob_qa,Test1234!
+Carol,Davis,789 Pine Rd,Austin,TX,73301,555-0103,345-67-8901,carol_qa,Test1234!

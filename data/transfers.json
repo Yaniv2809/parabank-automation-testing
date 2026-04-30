@@ -1,0 +1,5 @@
+[
+  {"from_index": 0, "to_index": 1, "amount": 1.00,  "description": "Minimal valid transfer"},
+  {"from_index": 0, "to_index": 1, "amount": 10.00, "description": "Standard transfer"},
+  {"from_index": 1, "to_index": 0, "amount": 1.00,  "description": "Reverse transfer — restores balance"}
+]

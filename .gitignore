@@ -1,0 +1,70 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+*.whl
+.eggs/
+pip-wheel-metadata/
+MANIFEST
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
+!.env.example
+
+# ── pytest ────────────────────────────────────────────────────────────────────
+.pytest_cache/
+.cache/
+pytestdebug.log
+
+# ── Allure ────────────────────────────────────────────────────────────────────
+allure-results/
+allure-report/
+
+# ── Failscope ─────────────────────────────────────────────────────────────────
+.failscope/
+
+# ── Playwright ────────────────────────────────────────────────────────────────
+playwright-report/
+test-results/
+
+# ── Coverage ──────────────────────────────────────────────────────────────────
+.coverage
+coverage.xml
+htmlcov/
+*.cover
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Secrets / credentials ─────────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+secrets.json
+credentials.json
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/

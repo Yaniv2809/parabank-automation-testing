@@ -1,0 +1,73 @@
+name: ParaBank Automation Suite
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * *"   # daily smoke run at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      PYTHONIOENCODING: utf-8   # required for FixtureForge Unicode output
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: python -m playwright install --with-deps chromium
+
+      - name: Run tests (with Failscope RCA)
+        run: |
+          python -m pytest \
+            --failscope \
+            --fs-offline \
+            --alluredir=allure-results \
+            -v
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 14
+
+      - name: Upload Failscope report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failscope-report
+          path: .failscope/
+          retention-days: 14
+
+      - name: Generate Allure HTML report
+        if: always()
+        uses: simple-elf/allure-report-action@v1
+        with:
+          allure_results: allure-results
+          allure_report:  allure-report
+
+      - name: Publish Allure report to GitHub Pages
+        if: github.ref == 'refs/heads/main' && always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir:  allure-report
