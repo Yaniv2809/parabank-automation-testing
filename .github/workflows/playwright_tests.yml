@@ -20,9 +20,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    # ── ParaBank runs as a local Docker service — no dependency on the public demo
+    services:
+      parabank:
+        image: parasoft/parabank
+        ports:
+          - 8080:8080
+        options: >-
+          --health-cmd "curl -f http://localhost:8080/parabank/index.htm || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 15
+          --health-start-period 30s
+
     env:
       PYTHONIOENCODING: utf-8   # required for FixtureForge Unicode output
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      PARABANK_BASE_URL: http://localhost:8080/parabank
 
     steps:
       - name: Checkout
@@ -40,20 +54,10 @@ jobs:
       - name: Install Playwright browsers
         run: python -m playwright install --with-deps chromium
 
-      - name: Wait for ParaBank to be reachable
+      - name: Confirm ParaBank Docker is ready
         run: |
-          echo "Checking ParaBank availability…"
-          for i in 1 2 3 4 5; do
-            if curl -sf --max-time 10 \
-                "https://parabank.parasoft.com/parabank/index.htm" > /dev/null; then
-              echo "✅ ParaBank is reachable (attempt $i)"
-              exit 0
-            fi
-            echo "⏳ Attempt $i/5 failed — waiting 30 s before retry…"
-            sleep 30
-          done
-          echo "❌ ParaBank unreachable after 5 attempts (2.5 min) — aborting CI"
-          exit 1
+          echo "ParaBank container health-check passed — service is ready at $PARABANK_BASE_URL"
+          curl -sf "$PARABANK_BASE_URL/index.htm" > /dev/null && echo "✅ HTTP check OK"
 
       - name: Run tests (with Failscope RCA)
         run: |

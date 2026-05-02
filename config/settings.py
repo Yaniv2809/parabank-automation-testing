@@ -1,6 +1,6 @@
 import os
 
-BASE_URL = "https://parabank.parasoft.com/parabank"
+BASE_URL = os.getenv("PARABANK_BASE_URL", "https://parabank.parasoft.com/parabank")
 API_BASE = f"{BASE_URL}/services/bank"
 
 DEFAULT_USERNAME = "john"
