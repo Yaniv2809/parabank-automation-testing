@@ -35,7 +35,7 @@ class BankAPIClient:
             except requests.RequestException as exc:
                 last_exc = exc
             if attempt < 2:
-                wait = 20 * (attempt + 1)
+                wait = 5 * (attempt + 1)   # 5 s, then 10 s — fits inside 45 s timeout
                 print(f"\n[api_client] login attempt {attempt + 1} failed "
                       f"({last_exc}), retrying in {wait}s…")
                 time.sleep(wait)

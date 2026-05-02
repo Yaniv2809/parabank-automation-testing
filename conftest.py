@@ -48,13 +48,15 @@ def forge():
 
 
 # ── Playwright — reduce default timeout from 30 s → 15 s ─────────────────────
-# Cuts per-test wall-time in half when the public ParaBank server is slow or
-# unresponsive, which is the main cause of 9-minute CI runs.
+# Override the pytest-playwright `page` fixture so the shorter timeouts apply
+# to every UI test automatically — WITHOUT autouse (which would wrongly inject
+# a Playwright browser into pure-API tests and add 30-40 s overhead per test).
 
-@pytest.fixture(autouse=True)
-def _set_playwright_timeout(page: Page) -> None:
+@pytest.fixture
+def page(page: Page) -> Page:  # type: ignore[override]
     page.set_default_timeout(15_000)
     page.set_default_navigation_timeout(20_000)
+    return page
 
 
 # ── UI — pre-logged-in page ───────────────────────────────────────────────────

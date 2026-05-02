@@ -1,4 +1,3 @@
-import time
 import uuid
 import allure
 import pytest
@@ -31,10 +30,11 @@ class TestRegistration:
         fixtures deterministically.  A timestamp suffix is appended to the
         username to avoid conflicts on the shared public ParaBank instance.
         """
-        # Combine a timestamp (seconds) with 12 hex UUID chars to get ~80 bits of
-        # uniqueness.  The public ParaBank server retains all registrations across
-        # CI runs, so short UUIDs (8 chars / 32 bits) eventually collide.
-        unique_username = f"{user.username[:8]}_{int(time.time())}_{uuid.uuid4().hex[:8]}"
+        # Use a fully-random username so the test never collides with pre-seeded
+        # Docker data or accumulated public-server registrations.  FixtureForge DDT
+        # value lies in exercising the registration *form fields* (name, address,
+        # phone …), not in reusing the generated username verbatim.
+        unique_username = f"qa_{uuid.uuid4().hex[:16]}"
 
         rp = RegistrationPage(page)
         rp.goto()
