@@ -1,6 +1,7 @@
 playwright
 pytest
 pytest-playwright
+pytest-timeout
 allure-pytest
 requests
 pydantic

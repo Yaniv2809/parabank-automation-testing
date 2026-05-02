@@ -40,12 +40,28 @@ jobs:
       - name: Install Playwright browsers
         run: python -m playwright install --with-deps chromium
 
+      - name: Wait for ParaBank to be reachable
+        run: |
+          echo "Checking ParaBank availability…"
+          for i in 1 2 3 4 5; do
+            if curl -sf --max-time 10 \
+                "https://parabank.parasoft.com/parabank/index.htm" > /dev/null; then
+              echo "✅ ParaBank is reachable (attempt $i)"
+              exit 0
+            fi
+            echo "⏳ Attempt $i/5 failed — waiting 30 s before retry…"
+            sleep 30
+          done
+          echo "❌ ParaBank unreachable after 5 attempts (2.5 min) — aborting CI"
+          exit 1
+
       - name: Run tests (with Failscope RCA)
         run: |
           python -m pytest \
             --failscope \
             --fs-offline \
             --alluredir=allure-results \
+            --timeout=45 \
             -v
 
       - name: Upload Allure results artifact

@@ -1,7 +1,9 @@
+import time
 import requests
 from config.settings import API_BASE, DEFAULT_USERNAME, DEFAULT_PASSWORD
 
-_JSON = {"Accept": "application/json"}
+_JSON    = {"Accept": "application/json"}
+_TIMEOUT = 15  # seconds per HTTP request
 
 
 class BankAPIClient:
@@ -15,12 +17,29 @@ class BankAPIClient:
     # ── Auth ──────────────────────────────────────────────────────────────────
 
     def login(self) -> dict:
-        resp = self._get(f"/login/{self.username}/{self.password}", auth=False)
-        resp.raise_for_status()
-        data = resp.json()
-        self.customer_id = data["id"]
-        self._refresh_accounts()
-        return data
+        """Login with automatic retry for transient 5xx errors (e.g. 502 during
+        ParaBank cold-start).  Tries up to 3 times with 20 s / 40 s back-off."""
+        last_exc: Exception | None = None
+        for attempt in range(3):
+            try:
+                resp = self._get(f"/login/{self.username}/{self.password}", auth=False)
+                if resp.status_code < 500:
+                    resp.raise_for_status()
+                    data = resp.json()
+                    self.customer_id = data["id"]
+                    self._refresh_accounts()
+                    return data
+                last_exc = requests.HTTPError(
+                    f"{resp.status_code} on login attempt {attempt + 1}", response=resp
+                )
+            except requests.RequestException as exc:
+                last_exc = exc
+            if attempt < 2:
+                wait = 20 * (attempt + 1)
+                print(f"\n[api_client] login attempt {attempt + 1} failed "
+                      f"({last_exc}), retrying in {wait}s…")
+                time.sleep(wait)
+        raise last_exc  # type: ignore[misc]
 
     def _refresh_accounts(self) -> list[dict]:
         resp = self._get(f"/customers/{self.customer_id}/accounts")
@@ -31,6 +50,7 @@ class BankAPIClient:
     # ── Low-level HTTP ────────────────────────────────────────────────────────
 
     def _get(self, path: str, auth: bool = True, **kwargs) -> requests.Response:
+        kwargs.setdefault("timeout", _TIMEOUT)
         return requests.get(
             API_BASE + path,
             headers=_JSON,
@@ -39,6 +59,7 @@ class BankAPIClient:
         )
 
     def _post(self, path: str, params: dict | None = None, auth: bool = True, **kwargs) -> requests.Response:
+        kwargs.setdefault("timeout", _TIMEOUT)
         return requests.post(
             API_BASE + path,
             headers=_JSON,

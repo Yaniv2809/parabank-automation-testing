@@ -47,6 +47,16 @@ def forge():
     return create_forge(seed=42)
 
 
+# ── Playwright — reduce default timeout from 30 s → 15 s ─────────────────────
+# Cuts per-test wall-time in half when the public ParaBank server is slow or
+# unresponsive, which is the main cause of 9-minute CI runs.
+
+@pytest.fixture(autouse=True)
+def _set_playwright_timeout(page: Page) -> None:
+    page.set_default_timeout(15_000)
+    page.set_default_navigation_timeout(20_000)
+
+
 # ── UI — pre-logged-in page ───────────────────────────────────────────────────
 
 @pytest.fixture
