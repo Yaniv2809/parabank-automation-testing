@@ -13,6 +13,11 @@
 [![pytest](https://img.shields.io/badge/pytest-9.x-orange.svg)](https://pytest.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+| | Link |
+|---|---|
+| 📊 **Allure Report** | [yaniv2809.github.io/parabank-automation-testing](https://yaniv2809.github.io/parabank-automation-testing/) |
+| 📋 **Test Plan (STP)** | [yaniv2809.github.io/parabank-automation-testing/test-plan.html](https://yaniv2809.github.io/parabank-automation-testing/test-plan.html) |
+
 ---
 
 ## Table of Contents
