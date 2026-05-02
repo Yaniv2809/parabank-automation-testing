@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Parabank — Test Plan v1.0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --navy:       #1a3a5c;
+    --blue:       #2563a8;
+    --blue-light: #dbeafe;
+    --blue-pale:  #f0f7ff;
+    --green-bg:   #ecfdf5;
+    --green-text: #065f46;
+    --red-bg:     #fef2f2;
+    --red-text:   #991b1b;
+    --yellow-bg:  #fefce8;
+    --yellow-text:#854d0e;
+    --gray-100:   #f8fafc;
+    --gray-200:   #e2e8f0;
+    --gray-500:   #64748b;
+    --gray-700:   #334155;
+    --gray-900:   #0f172a;
+    --border:     #cbd5e1;
+    --white:      #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    background: #e8edf3;
+    line-height: 1.65;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 40px auto 60px;
+    background: white;
+    box-shadow: 0 2px 40px rgba(0,0,0,0.12);
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: linear-gradient(160deg, var(--navy) 0%, #2563a8 100%);
+    padding: 64px 64px 52px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .cover-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .cover h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .cover h1 span { color: #93c5fd; }
+  .cover-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 36px;
+  }
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 32px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 24px;
+    width: fit-content;
+  }
+  .cover-meta-item label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 4px;
+  }
+  .cover-meta-item span {
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 64px;
+  }
+  .toc h3 {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 12px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 32px;
+  }
+  .toc-grid a {
+    font-size: 12.5px;
+    color: var(--blue);
+    text-decoration: none;
+    padding: 3px 0;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .toc-grid a:hover { text-decoration: underline; }
+  .toc-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gray-500);
+    min-width: 18px;
+  }
+
+  /* ── SECTIONS ── */
+  .body { padding: 0 64px 64px; }
+
+  .section {
+    padding-top: 40px;
+    border-top: 1px solid var(--gray-200);
+    margin-top: 40px;
+  }
+  .section:first-child { border-top: none; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+  .section h2 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 20px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  p { margin-bottom: 10px; color: var(--gray-700); }
+
+  ul.list { padding-left: 20px; margin-bottom: 12px; }
+  ul.list li { margin-bottom: 5px; }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin: 12px 0 20px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  thead th {
+    background: var(--navy);
+    color: white;
+    text-align: left;
+    padding: 9px 12px;
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: 0.3px;
+  }
+  tbody tr:nth-child(even) { background: var(--gray-100); }
+  tbody tr:hover { background: var(--blue-pale); }
+  tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+  }
+  td.label { font-weight: 600; color: var(--gray-900); white-space: nowrap; }
+  td code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.3px;
+  }
+  .p-high   { background: #fee2e2; color: #991b1b; }
+  .p-med    { background: #fef9c3; color: #854d0e; }
+  .p-low    { background: #dcfce7; color: #166534; }
+  .s-in     { background: var(--green-bg); color: var(--green-text); }
+  .s-out    { background: var(--red-bg); color: var(--red-text); }
+  .s-auto   { background: var(--blue-light); color: var(--blue); }
+  .s-manual { background: #f3e8ff; color: #6b21a8; }
+
+  /* ── LAYER CARDS ── */
+  .layer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 12px 0 20px;
+  }
+  .layer-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    border-top: 3px solid var(--blue);
+  }
+  .layer-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .layer-card p {
+    font-size: 11.5px;
+    color: var(--gray-500);
+    margin: 0;
+  }
+
+  /* ── RISK LEVEL ── */
+  .risk-high { color: #dc2626; font-weight: 600; }
+  .risk-med  { color: #d97706; font-weight: 600; }
+  .risk-low  { color: #16a34a; font-weight: 600; }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    background: var(--gray-100);
+    border-top: 1px solid var(--border);
+    padding: 16px 64px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--gray-500);
+  }
+
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-tag">Test Plan · v1.0</div>
+    <h1>ParaBank<br><span>Automation Framework</span></h1>
+    <p class="cover-sub">QA Automation — Financial Data Integrity Testing</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <label>Author</label>
+        <span>Yaniv Metuku</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Version</label>
+        <span>1.0</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Date</label>
+        <span>April 2026</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Status</label>
+        <span>Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <div class="toc-grid">
+      <a href="#s1"><span class="toc-num">01</span> Introduction</a>
+      <a href="#s5"><span class="toc-num">05</span> Test Cases Summary</a>
+      <a href="#s2"><span class="toc-num">02</span> Scope</a>
+      <a href="#s6"><span class="toc-num">06</span> Entry &amp; Exit Criteria</a>
+      <a href="#s3"><span class="toc-num">03</span> Test Approach</a>
+      <a href="#s7"><span class="toc-num">07</span> Risks &amp; Mitigation</a>
+      <a href="#s4"><span class="toc-num">04</span> Test Environment</a>
+      <a href="#s8"><span class="toc-num">08</span> Deliverables</a>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- S1 -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Introduction</h2>
+      </div>
+      <h3>1.1 Project Overview</h3>
+      <p>This Test Plan defines the strategy, scope, and approach for QA automation of the ParaBank simulated banking system. The framework validates data integrity and behavioral consistency across UI, API, E2E, and Database layers — integrating TestAxiom, Failscope, and FixtureForge.</p>
+
+      <h3>1.2 Objectives</h3>
+      <ul class="list">
+        <li>Validate core banking operations: login, accounts, transfers, loan requests.</li>
+        <li>Ensure UI–API consistency — data in the browser matches API responses.</li>
+        <li>Identify input validation failures using BVA/EP via TestAxiom.</li>
+        <li>Execute DDT scenarios using FixtureForge-generated test data.</li>
+        <li>Verify DB-level data integrity after UI and API operations.</li>
+        <li>Analyze failures automatically via Failscope dual-agent RCA pipeline.</li>
+        <li>Integrate all tests into GitHub Actions CI/CD pipeline with Allure reports.</li>
+      </ul>
+
+      <h3>1.3 System Under Test</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Attribute</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Application</td><td>ParaBank — Simulated Banking System</td></tr>
+            <tr><td class="label">URL</td><td><code>https://parabank.parasoft.com/parabank/</code></td></tr>
+            <tr><td class="label">Type</td><td>Web Application + REST API</td></tr>
+            <tr><td class="label">Domain</td><td>Financial Services / Banking</td></tr>
+            <tr><td class="label">Default Credentials</td><td><code>john / demo</code></td></tr>
+            <tr><td class="label">API Base</td><td><code>/parabank/services/bank/</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Scope</h2>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Layer</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Login / Logout</td><td>UI, API</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">Account Overview</td><td>UI, API, DB</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">Fund Transfer</td><td>UI, API, E2E, DB</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">Bill Payment</td><td>UI, API</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">Loan Request</td><td>UI, API, E2E</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">User Registration</td><td>UI, API</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">Find Transactions</td><td>UI, API, DB</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">Input Validation (BVA/EP)</td><td>UI, API</td><td><span class="badge s-in">In Scope</span></td></tr>
+            <tr><td class="label">Mobile Testing</td><td>—</td><td><span class="badge s-out">Out of Scope</span></td></tr>
+            <tr><td class="label">Load / Stress Testing</td><td>—</td><td><span class="badge s-out">Out of Scope</span></td></tr>
+            <tr><td class="label">Security Penetration</td><td>—</td><td><span class="badge s-out">Out of Scope</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Test Approach</h2>
+      </div>
+
+      <h3>3.1 Layers</h3>
+      <div class="layer-grid">
+        <div class="layer-card">
+          <h4>🖥 UI Layer</h4>
+          <p>Playwright + Python. Page Object Model. CSV-based DDT via FixtureForge.</p>
+        </div>
+        <div class="layer-card">
+          <h4>🔌 API Layer</h4>
+          <p>requests + pytest. REST endpoint validation. JSON schema checks.</p>
+        </div>
+        <div class="layer-card">
+          <h4>🔁 E2E Layer</h4>
+          <p>UI action → API verify → DB confirm. Cross-layer integrity checks.</p>
+        </div>
+        <div class="layer-card">
+          <h4>🗄 DB Layer</h4>
+          <p>SQLite. Verify persistence of financial transactions post-operations.</p>
+        </div>
+        <div class="layer-card">
+          <h4>🧪 TestAxiom</h4>
+          <p>EP/BVA test design for all input fields. Decision tables for loan logic.</p>
+        </div>
+        <div class="layer-card">
+          <h4>🔬 Failscope</h4>
+          <p>Dual-agent RCA on every failure. Error fingerprinting + Groq analysis.</p>
+        </div>
+      </div>
+
+      <h3>3.2 Test Design Techniques</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Technique</th><th>Tool</th><th>Applied To</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Equivalence Partitioning</td><td>TestAxiom</td><td>Login fields, Transfer amounts</td></tr>
+            <tr><td class="label">Boundary Value Analysis</td><td>TestAxiom</td><td>Loan amounts, Account balances</td></tr>
+            <tr><td class="label">Decision Table</td><td>TestAxiom Pro</td><td>Loan approval logic</td></tr>
+            <tr><td class="label">Data-Driven Testing</td><td>FixtureForge + CSV</td><td>Registration, Transfer scenarios</td></tr>
+            <tr><td class="label">Exploratory</td><td>Manual</td><td>Edge cases discovered during dev</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Test Environment</h2>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Component</th><th>Technology</th><th>Version</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Language</td><td>Python</td><td>3.13</td></tr>
+            <tr><td class="label">UI Automation</td><td>Playwright</td><td>latest</td></tr>
+            <tr><td class="label">Test Framework</td><td>pytest</td><td>latest</td></tr>
+            <tr><td class="label">Test Design</td><td>TestAxiom</td><td>0.1.0 (PyPI)</td></tr>
+            <tr><td class="label">Failure Analysis</td><td>Failscope</td><td>0.1.1 (PyPI)</td></tr>
+            <tr><td class="label">Test Data</td><td>FixtureForge</td><td>local</td></tr>
+            <tr><td class="label">Reporting</td><td>Allure</td><td>latest</td></tr>
+            <tr><td class="label">CI/CD</td><td>GitHub Actions</td><td>—</td></tr>
+            <tr><td class="label">Database</td><td>SQLite</td><td>built-in</td></tr>
+            <tr><td class="label">AI Analysis</td><td>Groq / Llama</td><td>via Failscope</td></tr>
+            <tr><td class="label">OS</td><td>Windows 11</td><td>—</td></tr>
+            <tr><td class="label">SUT URL</td><td colspan="2"><code>https://parabank.parasoft.com/parabank/</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Test Cases Summary</h2>
+      </div>
+
+      <h3>UI Tests</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Priority</th><th>Type</th></tr></thead>
+          <tbody>
+            <tr><td><code>UI-001</code></td><td>Valid login with default credentials</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-002</code></td><td>Login with invalid password</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-003</code></td><td>Login with empty fields (BVA)</td><td><span class="badge p-med">Med</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-004</code></td><td>Account overview displays correct balance</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-005</code></td><td>Fund transfer — valid amount</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-006</code></td><td>Fund transfer — boundary amounts (BVA)</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-007</code></td><td>Fund transfer — negative amount</td><td><span class="badge p-med">Med</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-008</code></td><td>New user registration — valid data (DDT)</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-009</code></td><td>Loan request — approved scenario</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+            <tr><td><code>UI-010</code></td><td>Loan request — denied scenario</td><td><span class="badge p-high">High</span></td><td><span class="badge s-auto">Auto</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>API Tests</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Endpoint</th><th>Scenario</th><th>Priority</th></tr></thead>
+          <tbody>
+            <tr><td><code>API-001</code></td><td><code>GET /accounts/{id}</code></td><td>Valid account returns correct data</td><td><span class="badge p-high">High</span></td></tr>
+            <tr><td><code>API-002</code></td><td><code>GET /accounts/{id}</code></td><td>Invalid ID returns 404</td><td><span class="badge p-high">High</span></td></tr>
+            <tr><td><code>API-003</code></td><td><code>POST /transfer</code></td><td>Valid transfer updates balances</td><td><span class="badge p-high">High</span></td></tr>
+            <tr><td><code>API-004</code></td><td><code>POST /transfer</code></td><td>Insufficient funds returns error</td><td><span class="badge p-high">High</span></td></tr>
+            <tr><td><code>API-005</code></td><td><code>POST /loan</code></td><td>Loan approval — decision table</td><td><span class="badge p-med">Med</span></td></tr>
+            <tr><td><code>API-006</code></td><td><code>GET /transactions</code></td><td>Transaction history is paginated</td><td><span class="badge p-low">Low</span></td></tr>
+            <tr><td><code>API-007</code></td><td><code>POST /register</code></td><td>Duplicate username returns error</td><td><span class="badge p-med">Med</span></td></tr>
+            <tr><td><code>API-008</code></td><td><code>GET /customers/{id}</code></td><td>Customer data matches UI display</td><td><span class="badge p-med">Med</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>E2E + DB Tests</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Layers</th><th>Priority</th></tr></thead>
+          <tbody>
+            <tr><td><code>E2E-001</code></td><td>Transfer via UI → verify API balance → confirm DB record</td><td>UI + API + DB</td><td><span class="badge p-high">High</span></td></tr>
+            <tr><td><code>E2E-002</code></td><td>Register via API → login via UI → account visible</td><td>API + UI</td><td><span class="badge p-high">High</span></td></tr>
+            <tr><td><code>E2E-003</code></td><td>Loan request via UI → verify API status → DB confirmation</td><td>UI + API + DB</td><td><span class="badge p-high">High</span></td></tr>
+            <tr><td><code>E2E-004</code></td><td>Bill payment UI → API amount deducted → DB transaction record</td><td>UI + API + DB</td><td><span class="badge p-med">Med</span></td></tr>
+            <tr><td><code>E2E-005</code></td><td>Find transaction by amount → UI result matches DB record</td><td>UI + DB</td><td><span class="badge p-med">Med</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="font-size:12px; color: var(--gray-500); margin-top: 8px;">
+        Total: <strong>23 test cases</strong> — 10 UI · 8 API · 5 E2E/DB &nbsp;|&nbsp;
+        TestAxiom generates additional BVA/EP sub-cases per field
+      </p>
+    </div>
+
+    <!-- S6 -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Entry &amp; Exit Criteria</h2>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Criteria</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Entry — Start Testing</td><td>ParaBank URL accessible · Python env configured · pytest + Playwright installed</td></tr>
+            <tr><td class="label">Entry — CI</td><td>GitHub Actions workflow file present · Allure configured</td></tr>
+            <tr><td class="label">Exit — Pass</td><td>≥90% pass rate · All High priority tests pass · Allure report published</td></tr>
+            <tr><td class="label">Exit — Fail</td><td>Any E2E-001/002/003 failing · UI login tests failing · CI pipeline broken</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S7 -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Risks &amp; Mitigation</h2>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Risk</th><th>Level</th><th>Mitigation</th></tr></thead>
+          <tbody>
+            <tr><td>ParaBank public server downtime</td><td><span class="risk-high">High</span></td><td>Run local Docker instance of ParaBank as fallback</td></tr>
+            <tr><td>Flaky UI tests (dynamic elements)</td><td><span class="risk-med">Med</span></td><td>Playwright auto-wait + explicit wait helpers in BasePage</td></tr>
+            <tr><td>Groq API unavailable (Failscope)</td><td><span class="risk-low">Low</span></td><td>Failscope offline mode (--fs-offline flag)</td></tr>
+            <tr><td>TestAxiom Pro license missing</td><td><span class="risk-low">Low</span></td><td>Community tier (EP/BVA) sufficient for most cases</td></tr>
+            <tr><td>DB state pollution between tests</td><td><span class="risk-med">Med</span></td><td>pytest fixtures with teardown + SQLite reset per session</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S8 -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Deliverables</h2>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Deliverable</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Test Plan v1.0</td><td><span class="badge s-in">✓ Done</span></td></tr>
+            <tr><td class="label">Test Case Specification</td><td><span class="badge" style="background:#fef9c3;color:#854d0e;">Next</span></td></tr>
+            <tr><td class="label">Framework Code (conftest + POM)</td><td><span class="badge s-out">Pending</span></td></tr>
+            <tr><td class="label">TestAxiom Integration</td><td><span class="badge s-out">Pending</span></td></tr>
+            <tr><td class="label">Failscope Integration</td><td><span class="badge s-out">Pending</span></td></tr>
+            <tr><td class="label">GitHub Actions CI Pipeline</td><td><span class="badge s-out">Pending</span></td></tr>
+            <tr><td class="label">Allure Report (GitHub Pages)</td><td><span class="badge s-out">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <div class="doc-footer">
+    <span>ParaBank Automation Framework · Test Plan v1.0</span>
+    <span>Yaniv Metuku · April 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
