@@ -59,6 +59,23 @@ jobs:
           echo "ParaBank container health-check passed — service is ready at $PARABANK_BASE_URL"
           curl -sf "$PARABANK_BASE_URL/index.htm" > /dev/null && echo "✅ HTTP check OK"
 
+      - name: Initialize ParaBank database
+        run: |
+          # The Docker image starts with an empty DB.  The REST API (/services/bank/*)
+          # returns 400 on login until the DB is seeded with john/demo and sample accounts.
+          # initializeDatabase is idempotent and safe to call on every CI run.
+          echo "Seeding ParaBank database (john/demo + sample accounts)…"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "$PARABANK_BASE_URL/services/bank/initializeDatabase")
+          echo "initializeDatabase HTTP status: $STATUS"
+          # Tolerate 204 No Content or 200 OK; fail on 5xx
+          if [ "$STATUS" -ge 500 ]; then
+            echo "❌ initializeDatabase failed with $STATUS"
+            exit 1
+          fi
+          echo "✅ Database initialized"
+          sleep 2
+
       - name: Run tests (with Failscope RCA)
         run: |
           python -m pytest \
