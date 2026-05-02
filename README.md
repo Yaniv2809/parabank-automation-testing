@@ -38,7 +38,8 @@
 
 This framework validates **data integrity and behavioral consistency** across all layers of the ParaBank banking application. Every test case maps directly to the [Test Plan v1.0](Parabank_Test_Plan_v1.0.html) and covers login, account management, fund transfers, loan requests, and user registration.
 
-**System under test:** `https://parabank.parasoft.com/parabank/`  
+**CI environment:** `parasoft/parabank` Docker image — isolated, always available, seeded via `POST /services/bank/initializeDB`  
+**Local default:** `https://parabank.parasoft.com/parabank/` (override with `PARABANK_BASE_URL`)  
 **Default credentials:** `john / demo`
 
 ---
@@ -77,8 +78,8 @@ This framework validates **data integrity and behavioral consistency** across al
 | UI-003 | Login with empty username — BVA via TestAxiom | Medium |
 | UI-004 | Account overview balance matches API | High |
 | UI-005 | Fund transfer — valid amount | High |
-| UI-006 | Fund transfer — boundary amounts BVA via TestAxiom | High |
-| UI-007 | Fund transfer — negative amount rejected | Medium |
+| UI-006 | Fund transfer — boundary amounts BVA via TestAxiom (invalid boundaries → `xfail`: demo accepts all amounts) | High |
+| UI-007 | Fund transfer — negative amount rejected (`xfail`: ParaBank demo accepts negative amounts — known SUT defect) | Medium |
 | UI-008 | New user registration — DDT via FixtureForge | High |
 | UI-009 | Loan request — approved scenario | High |
 | UI-010 | Loan request — denied scenario | High |
@@ -119,6 +120,8 @@ This framework validates **data integrity and behavioral consistency** across al
 | Test Data | FixtureForge | ≥ 2.1.0 |
 | Reporting | Allure | 2.29 |
 | CI/CD | GitHub Actions | — |
+| SUT Container | Docker (`parasoft/parabank`) | latest |
+| Test Timeout | pytest-timeout | latest |
 | Database | SQLite | built-in |
 | HTTP Client | requests | built-in |
 
@@ -188,11 +191,19 @@ pip install -r requirements.txt
 python -m playwright install chromium
 ```
 
-### 2. Configure environment (optional)
+### 2. Start ParaBank (choose one)
 
+**Option A — Docker (recommended, identical to CI):**
 ```bash
-cp .env.example .env
-# Edit .env — all fields have working defaults for the public ParaBank server
+docker run -d --name parabank -p 8080:8080 parasoft/parabank
+# Wait ~30s for startup, then seed the database:
+curl -X POST http://localhost:8080/parabank/services/bank/initializeDB
+export PARABANK_BASE_URL=http://localhost:8080/parabank
+```
+
+**Option B — Public server (no Docker required):**
+```bash
+# Default — no setup needed, uses https://parabank.parasoft.com/parabank/
 ```
 
 ### 3. Run all tests
@@ -263,6 +274,12 @@ Push / PR / Daily 06:00 UTC
         │
         ▼
 ┌──────────────────────────┐
+│  parasoft/parabank       │  ← Docker service, port 8080
+│  (health-check ready)    │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
 │  Setup Python 3.13       │
 │  pip install             │
 │  playwright install      │
@@ -270,9 +287,15 @@ Push / PR / Daily 06:00 UTC
              │
              ▼
 ┌──────────────────────────┐
+│  POST /initializeDB      │  ← Seed john/demo + sample accounts
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
 │  pytest                  │
 │    --failscope           │  ← Failscope dual-agent RCA
 │    --fs-offline          │
+│    --timeout=45          │  ← per-test hard cap
 │    --alluredir           │
 └────────────┬─────────────┘
              │
@@ -280,16 +303,18 @@ Push / PR / Daily 06:00 UTC
 ┌──────────────────────────┐
 │  Allure CLI generates    │
 │  HTML report             │
+│  + Test Plan copied in   │
 └────────────┬─────────────┘
              │
              ▼
 ┌──────────────────────────┐
-│  GitHub Pages publish    │  ← Live Allure report
+│  GitHub Pages publish    │  ← Allure report + Test Plan (STP)
 │  Artifacts upload        │  ← allure-results + .failscope/
 └──────────────────────────┘
 ```
 
-**Allure report** is published to GitHub Pages on every successful `main` run.  
+**Allure report** → `https://yaniv2809.github.io/parabank-automation-testing/`  
+**Test Plan (STP)** → `https://yaniv2809.github.io/parabank-automation-testing/test-plan.html`  
 **Failscope RCA report** is uploaded as a CI artifact (`failscope-report`).
 
 ---
