@@ -394,5 +394,5 @@ Failscope automatically:
 
 ## Author
 
-**Yaniv Metuku** — Senior QA / SDET  
+**Yaniv Metuku** — QA / SDET  
 [TestAxiom](https://pypi.org/project/testaxiom/) · [FixtureForge](https://pypi.org/project/fixtureforge/) · [Failscope](https://pypi.org/project/failscope/)
