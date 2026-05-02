@@ -1,3 +1,4 @@
+import time
 import uuid
 import allure
 import pytest
@@ -30,7 +31,10 @@ class TestRegistration:
         fixtures deterministically.  A timestamp suffix is appended to the
         username to avoid conflicts on the shared public ParaBank instance.
         """
-        unique_username = f"{user.username}_{uuid.uuid4().hex[:8]}"
+        # Combine a timestamp (seconds) with 12 hex UUID chars to get ~80 bits of
+        # uniqueness.  The public ParaBank server retains all registrations across
+        # CI runs, so short UUIDs (8 chars / 32 bits) eventually collide.
+        unique_username = f"{user.username[:8]}_{int(time.time())}_{uuid.uuid4().hex[:8]}"
 
         rp = RegistrationPage(page)
         rp.goto()
