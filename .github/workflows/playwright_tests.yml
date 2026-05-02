@@ -61,20 +61,19 @@ jobs:
 
       - name: Initialize ParaBank database
         run: |
-          # The Docker image starts with an empty DB.  The REST API (/services/bank/*)
-          # returns 400 on login until the DB is seeded with john/demo and sample accounts.
-          # initializeDatabase is idempotent and safe to call on every CI run.
-          echo "Seeding ParaBank database (john/demo + sample accounts)…"
+          # Docker image starts with an empty DB — REST API returns 400 ("Invalid
+          # username and/or password") until the DB is seeded.
+          # Correct endpoint: POST /services/bank/initializeDB  (returns 204)
+          echo "Seeding ParaBank DB with john/demo and sample accounts…"
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X POST "$PARABANK_BASE_URL/services/bank/initializeDatabase")
-          echo "initializeDatabase HTTP status: $STATUS"
-          # Tolerate 204 No Content or 200 OK; fail on 5xx
+            -X POST "$PARABANK_BASE_URL/services/bank/initializeDB")
+          echo "initializeDB HTTP status: $STATUS"
           if [ "$STATUS" -ge 500 ]; then
-            echo "❌ initializeDatabase failed with $STATUS"
+            echo "❌ initializeDB failed with $STATUS"
             exit 1
           fi
-          echo "✅ Database initialized"
-          sleep 2
+          echo "✅ Database ready (HTTP $STATUS)"
+          sleep 1
 
       - name: Run tests (with Failscope RCA)
         run: |
