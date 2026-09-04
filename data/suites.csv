@@ -1,83 +1,83 @@
 "Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"skipped","Thu Sep 03 10:27:40 UTC 2026","Thu Sep 03 10:27:40 UTC 2026","665","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
-TestAxiom BVA generates four boundary points for the range (0.01, 100.00):
-  just_below_min=0.0 (invalid), at_min=0.01 (valid),
-  at_max=100.0 (valid),         just_above_max=100.01 (invalid).
-Valid boundaries execute a real transfer; invalid ones check for rejection.
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","14","tests.api","test_endpoints","TestAPIEndpoints","","","GET /accounts/{id}/transactions — list is returned",""
+"skipped","Fri Sep 04 10:14:32 UTC 2026","Fri Sep 04 10:14:32 UTC 2026","691","tests.e2e","test_transfer_consistency","TestTransferConsistency","","","Transfer via UI → verify API balance → confirm DB record","
+Cross-layer integrity check:
+  1. UI  — execute a $1 transfer
+  2. API — verify 'from' account balance decreased by $1
+  3. DB  — confirm a transaction record exists (skipped if DB unavailable)
 "
-"passed","Thu Sep 03 10:27:45 UTC 2026","Thu Sep 03 10:27:46 UTC 2026","665","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
-TestAxiom BVA generates four boundary points for the range (0.01, 100.00):
-  just_below_min=0.0 (invalid), at_min=0.01 (valid),
-  at_max=100.0 (valid),         just_above_max=100.01 (invalid).
-Valid boundaries execute a real transfer; invalid ones check for rejection.
-"
-"passed","Thu Sep 03 10:27:31 UTC 2026","Thu Sep 03 10:27:31 UTC 2026","651","tests.ui","test_loan","TestLoan","","","Loan request — denied scenario","
-Very large loan ($100 000) with a token down payment ($1) → should be
-denied because the down payment ratio is far below ParaBank's threshold.
-"
-"passed","Thu Sep 03 10:27:47 UTC 2026","Thu Sep 03 10:27:48 UTC 2026","664","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
-TestAxiom BVA generates four boundary points for the range (0.01, 100.00):
-  just_below_min=0.0 (invalid), at_min=0.01 (valid),
-  at_max=100.0 (valid),         just_above_max=100.01 (invalid).
-Valid boundaries execute a real transfer; invalid ones check for rejection.
-"
-"passed","Thu Sep 03 10:27:29 UTC 2026","Thu Sep 03 10:27:29 UTC 2026","666","tests.ui","test_loan","TestLoan","","","Loan request — approved scenario","
-Small loan ($100) with a 50 % down payment ($50).  A small amount
-reduces balance dependency — ParaBank should approve regardless of
-how much other tests have spent.
-"
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","8","tests.api","test_endpoints","TestAPIEndpoints","","","GET /customers/{id} — customer data returned",""
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","8","tests.api","test_endpoints","TestAPIEndpoints","","","GET /accounts/{id} — valid account returns correct data",""
-"passed","Thu Sep 03 10:27:33 UTC 2026","Thu Sep 03 10:27:34 UTC 2026","1258","tests.ui","test_login","TestLogin","","","Login with invalid password",""
-"skipped","Thu Sep 03 10:27:23 UTC 2026","Thu Sep 03 10:27:23 UTC 2026","850","tests.e2e","test_loan_logic","TestLoanLogic","","","Loan request via UI → verify API status → DB confirmation","
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","21","tests.api","test_endpoints","TestAPIEndpoints","","","GET /accounts/{id} — invalid ID returns error",""
+"skipped","Fri Sep 04 10:14:30 UTC 2026","Fri Sep 04 10:14:30 UTC 2026","720","tests.e2e","test_loan_logic","TestLoanLogic","","","Loan request via UI → verify API status → DB confirmation","
 Cross-layer loan integrity check:
   1. UI  — submit a $1 000 loan request ($100 down)
   2. API — verify the loan is recorded as approved
   3. DB  — confirm a transaction record exists (skipped if DB unavailable)
 "
-"passed","Thu Sep 03 10:27:38 UTC 2026","Thu Sep 03 10:27:38 UTC 2026","664","tests.ui","test_transfer","TestTransfer","","","Fund transfer — valid amount succeeds",""
-"skipped","Thu Sep 03 10:27:42 UTC 2026","Thu Sep 03 10:27:42 UTC 2026","650","tests.ui","test_transfer","TestTransfer","","","Fund transfer — negative amount is rejected",""
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","34","tests.api","test_endpoints","TestAPIEndpoints","","","POST /requestLoan — decision table via TestAxiom","
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","464","tests.api","test_endpoints","TestAPIEndpoints","","","POST /requestLoan — decision table via TestAxiom","
 TestAxiom decision table logic:
   - Reasonable down payment ratio (≥10 %) → Approved
   - Negligible down payment              → Denied
 "
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","13","tests.api","test_endpoints","TestAPIEndpoints","","","POST /register — duplicate username returns error",""
-"passed","Thu Sep 03 10:27:34 UTC 2026","Thu Sep 03 10:27:35 UTC 2026","1175","tests.ui","test_login","TestLogin","","","Login with empty username — BVA via TestAxiom","
-TestAxiom generates EP partitions for a string parameter.
-The 'empty_string' partition must be classified as INVALID.
-We then execute that specific boundary value against the live UI.
-"
-"skipped","Thu Sep 03 10:27:49 UTC 2026","Thu Sep 03 10:27:49 UTC 2026","666","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","6","tests.api","test_endpoints","TestAPIEndpoints","","","POST /register — duplicate username returns error",""
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","37","tests.api","test_endpoints","TestAPIEndpoints","","","POST /transfer — valid transfer updates balances",""
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","8","tests.api","test_endpoints","TestAPIEndpoints","","","GET /accounts/{id} — valid account returns correct data",""
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","6","tests.api","test_endpoints","TestAPIEndpoints","","","GET /customers/{id} — customer data returned",""
+"passed","Fri Sep 04 10:14:51 UTC 2026","Fri Sep 04 10:14:51 UTC 2026","626","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
 TestAxiom BVA generates four boundary points for the range (0.01, 100.00):
   just_below_min=0.0 (invalid), at_min=0.01 (valid),
   at_max=100.0 (valid),         just_above_max=100.01 (invalid).
 Valid boundaries execute a real transfer; invalid ones check for rejection.
 "
-"passed","Thu Sep 03 10:27:27 UTC 2026","Thu Sep 03 10:27:27 UTC 2026","597","tests.ui","test_accounts","TestAccounts","","","Account overview displays correct balance — UI matches API",""
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","45","tests.api","test_endpoints","TestAPIEndpoints","","","POST /transfer — valid transfer updates balances",""
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","476","tests.api","test_endpoints","TestAPIEndpoints","","","POST /requestLoan — decision table via TestAxiom","
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","21","tests.api","test_endpoints","TestAPIEndpoints","","","POST /requestLoan — decision table via TestAxiom","
 TestAxiom decision table logic:
   - Reasonable down payment ratio (≥10 %) → Approved
   - Negligible down payment              → Denied
 "
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","22","tests.api","test_endpoints","TestAPIEndpoints","","","POST /transfer — insufficient funds returns error",""
-"passed","Thu Sep 03 10:27:42 UTC 2026","Thu Sep 03 10:27:44 UTC 2026","1297","tests.ui","test_registration","TestRegistration","","","New user registration — valid data (DDT via FixtureForge)","
+"passed","Fri Sep 04 10:14:26 UTC 2026","Fri Sep 04 10:14:26 UTC 2026","18","tests.api","test_endpoints","TestAPIEndpoints","","","POST /transfer — insufficient funds returns error",""
+"passed","Fri Sep 04 10:14:33 UTC 2026","Fri Sep 04 10:14:34 UTC 2026","578","tests.ui","test_accounts","TestAccounts","","","Account overview displays correct balance — UI matches API",""
+"passed","Fri Sep 04 10:14:48 UTC 2026","Fri Sep 04 10:14:49 UTC 2026","1151","tests.ui","test_registration","TestRegistration","","","New user registration — valid data (DDT via FixtureForge)","
 FixtureForge (use_ai=False, seed=42) generates realistic registration
 fixtures deterministically.  A timestamp suffix is appended to the
 username to avoid conflicts on the shared public ParaBank instance.
 "
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","16","tests.api","test_endpoints","TestAPIEndpoints","","","GET /accounts/{id}/transactions — list is returned",""
-"passed","Thu Sep 03 10:27:31 UTC 2026","Thu Sep 03 10:27:33 UTC 2026","1234","tests.ui","test_login","TestLogin","","","Valid login with default credentials",""
-"passed","Thu Sep 03 10:27:19 UTC 2026","Thu Sep 03 10:27:19 UTC 2026","22","tests.api","test_endpoints","TestAPIEndpoints","","","GET /accounts/{id} — invalid ID returns error",""
-"passed","Thu Sep 03 10:27:35 UTC 2026","Thu Sep 03 10:27:36 UTC 2026","1412","tests.ui","test_registration","TestRegistration","","","New user registration — valid data (DDT via FixtureForge)","
+"skipped","Fri Sep 04 10:14:54 UTC 2026","Fri Sep 04 10:14:55 UTC 2026","627","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
+TestAxiom BVA generates four boundary points for the range (0.01, 100.00):
+  just_below_min=0.0 (invalid), at_min=0.01 (valid),
+  at_max=100.0 (valid),         just_above_max=100.01 (invalid).
+Valid boundaries execute a real transfer; invalid ones check for rejection.
+"
+"skipped","Fri Sep 04 10:14:46 UTC 2026","Fri Sep 04 10:14:46 UTC 2026","632","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
+TestAxiom BVA generates four boundary points for the range (0.01, 100.00):
+  just_below_min=0.0 (invalid), at_min=0.01 (valid),
+  at_max=100.0 (valid),         just_above_max=100.01 (invalid).
+Valid boundaries execute a real transfer; invalid ones check for rejection.
+"
+"passed","Fri Sep 04 10:14:44 UTC 2026","Fri Sep 04 10:14:44 UTC 2026","625","tests.ui","test_transfer","TestTransfer","","","Fund transfer — valid amount succeeds",""
+"skipped","Fri Sep 04 10:14:48 UTC 2026","Fri Sep 04 10:14:48 UTC 2026","625","tests.ui","test_transfer","TestTransfer","","","Fund transfer — negative amount is rejected",""
+"passed","Fri Sep 04 10:14:40 UTC 2026","Fri Sep 04 10:14:41 UTC 2026","1131","tests.ui","test_login","TestLogin","","","Login with empty username — BVA via TestAxiom","
+TestAxiom generates EP partitions for a string parameter.
+The 'empty_string' partition must be classified as INVALID.
+We then execute that specific boundary value against the live UI.
+"
+"passed","Fri Sep 04 10:14:52 UTC 2026","Fri Sep 04 10:14:53 UTC 2026","642","tests.ui","test_transfer","TestTransfer","","","Fund transfer — boundary amounts via TestAxiom BVA","
+TestAxiom BVA generates four boundary points for the range (0.01, 100.00):
+  just_below_min=0.0 (invalid), at_min=0.01 (valid),
+  at_max=100.0 (valid),         just_above_max=100.01 (invalid).
+Valid boundaries execute a real transfer; invalid ones check for rejection.
+"
+"passed","Fri Sep 04 10:14:38 UTC 2026","Fri Sep 04 10:14:39 UTC 2026","1192","tests.ui","test_login","TestLogin","","","Valid login with default credentials",""
+"passed","Fri Sep 04 10:14:39 UTC 2026","Fri Sep 04 10:14:40 UTC 2026","1183","tests.ui","test_login","TestLogin","","","Login with invalid password",""
+"passed","Fri Sep 04 10:14:41 UTC 2026","Fri Sep 04 10:14:43 UTC 2026","1291","tests.ui","test_registration","TestRegistration","","","New user registration — valid data (DDT via FixtureForge)","
 FixtureForge (use_ai=False, seed=42) generates realistic registration
 fixtures deterministically.  A timestamp suffix is appended to the
 username to avoid conflicts on the shared public ParaBank instance.
 "
-"skipped","Thu Sep 03 10:27:25 UTC 2026","Thu Sep 03 10:27:26 UTC 2026","766","tests.e2e","test_transfer_consistency","TestTransferConsistency","","","Transfer via UI → verify API balance → confirm DB record","
-Cross-layer integrity check:
-  1. UI  — execute a $1 transfer
-  2. API — verify 'from' account balance decreased by $1
-  3. DB  — confirm a transaction record exists (skipped if DB unavailable)
+"passed","Fri Sep 04 10:14:35 UTC 2026","Fri Sep 04 10:14:36 UTC 2026","633","tests.ui","test_loan","TestLoan","","","Loan request — approved scenario","
+Small loan ($100) with a 50 % down payment ($50).  A small amount
+reduces balance dependency — ParaBank should approve regardless of
+how much other tests have spent.
+"
+"passed","Fri Sep 04 10:14:37 UTC 2026","Fri Sep 04 10:14:38 UTC 2026","617","tests.ui","test_loan","TestLoan","","","Loan request — denied scenario","
+Very large loan ($100 000) with a token down payment ($1) → should be
+denied because the down payment ratio is far below ParaBank's threshold.
 "
